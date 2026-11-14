@@ -1,4 +1,4 @@
-/* COLORES Y BASE */
+/* BASE */
 :root {
   --fondo: #f1f4f1;
   --texto: #202820;
@@ -18,6 +18,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   padding: 12px;
@@ -27,6 +31,13 @@ button,
 input,
 textarea {
   font: inherit;
+}
+
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
 }
 
 .contenedor {
@@ -136,7 +147,8 @@ button:active {
   filter: brightness(0.9);
 }
 
-button:focus-visible {
+button:focus-visible,
+a:focus-visible {
   outline: 3px solid var(--azul);
   outline-offset: 3px;
 }
@@ -189,7 +201,7 @@ header p {
   line-height: 1.5;
 }
 
-/* COMPROBACIÓN DEL DESCARTE TOTAL */
+/* COMPROBACIÓN */
 .comprobacion {
   margin-bottom: 24px;
   padding: 16px;
@@ -259,12 +271,7 @@ header p {
   color: var(--rojo);
 }
 
-.comprobacion[data-estado="pendiente"]
-#resultado-comprobacion {
-  color: #526052;
-}
-
-/* EMPRESAS: UNA DEBAJO DE OTRA EN TELÉFONO */
+/* EMPRESAS */
 .empresas {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -333,7 +340,7 @@ label {
   cursor: pointer;
 }
 
-/* CAMPOS GRANDES */
+/* CAMPOS EDITABLES */
 .empresa input {
   display: block;
   width: 100%;
@@ -370,7 +377,6 @@ textarea::selection {
   background: #fff0f0;
 }
 
-/* ABONARON DE MÁS */
 .fila-excedente th,
 .fila-excedente td,
 .fila-excedente input {
@@ -400,7 +406,7 @@ output,
   overflow-wrap: anywhere;
 }
 
-/* RESUMEN GENERAL */
+/* RESUMEN: SOLO TONELADAS Y TOTAL A PAGAR */
 .resumen {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -466,6 +472,94 @@ noscript {
   font-size: 17px;
 }
 
+/* VENTANA PARA GUARDAR IMAGEN */
+.dialogo-imagen {
+  width: calc(100% - 24px);
+  max-width: 620px;
+  max-height: 90vh;
+  max-height: 90dvh;
+  margin: auto;
+  padding: 20px;
+  overflow-y: auto;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--texto);
+  box-shadow: 0 15px 60px #00000040;
+}
+
+.dialogo-imagen::backdrop {
+  background: #00000099;
+}
+
+.dialogo-imagen h2 {
+  margin: 0 0 12px;
+  font-size: 25px;
+}
+
+.dialogo-imagen p {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+#vista-previa-imagen {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 16px 0;
+  border: 1px solid var(--borde);
+  background: #fff;
+  -webkit-touch-callout: default;
+}
+
+.acciones-imagen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.acciones-imagen button,
+.acciones-imagen a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px;
+  border: 1px solid var(--verde);
+  border-radius: 8px;
+  background: var(--verde);
+  color: #fff;
+  font-size: 19px;
+  font-weight: bold;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#enlace-descargar-imagen {
+  background: #fff;
+  color: var(--verde);
+}
+
+.acciones-imagen form {
+  margin: 0;
+}
+
+.acciones-imagen form button {
+  border-color: #b8c1b8;
+  background: #f1f4f1;
+  color: #354335;
+}
+
+#estado-imagen {
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
 /* TABLETS */
 @media (min-width: 650px) {
   body {
@@ -508,14 +602,6 @@ noscript {
 
   .empresa input {
     font-size: 20px;
-  }
-
-  .resumen {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .resumen strong {
-    font-size: 23px;
   }
 }
 
@@ -560,6 +646,10 @@ noscript {
   .comprobacion-datos strong {
     font-size: 21px;
   }
+
+  .dialogo-imagen {
+    padding: 14px;
+  }
 }
 
 /* IMAGEN PNG */
@@ -583,7 +673,7 @@ noscript {
 }
 
 .modo-exportacion .resumen {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .modo-exportacion th,
@@ -595,12 +685,8 @@ noscript {
   font-size: 21px;
 }
 
-.modo-exportacion .resumen span {
-  font-size: 16px;
-}
-
 .modo-exportacion .resumen strong {
-  font-size: 22px;
+  font-size: 27px;
 }
 
 .valor-exportado {
@@ -635,10 +721,11 @@ noscript {
   header,
   .acciones,
   .importar-mensaje,
+  .dialogo-imagen,
   .ayuda,
   #estado,
   noscript {
-    display: none;
+    display: none !important;
   }
 
   #reporte {
@@ -737,20 +824,20 @@ noscript {
   }
 
   .resumen {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
     margin-top: 14px;
   }
 
   .resumen > div {
-    padding: 9px;
+    padding: 10px;
   }
 
   .resumen span {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .resumen strong {
-    font-size: 16px;
+    font-size: 20px;
   }
 }
