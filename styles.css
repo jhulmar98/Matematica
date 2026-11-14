@@ -1,10 +1,10 @@
-/* BASE */
+/* COLORES Y BASE */
 :root {
   --fondo: #f1f4f1;
   --texto: #202820;
   --borde: #c8d0c8;
   --verde: #286440;
-  --verde-claro: #b5e3a0;
+  --verde-claro: #e6f0e4;
   --amarillo: #ffff00;
   --rojo: #bd2028;
   --azul: #176bb0;
@@ -24,13 +24,83 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
 .contenedor {
   max-width: 1400px;
   margin: 0 auto;
+}
+
+/* PEGAR MENSAJE */
+.importar-mensaje {
+  margin-bottom: 22px;
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.importar-mensaje h2 {
+  margin: 0 0 14px;
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.importar-mensaje label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.importar-mensaje textarea {
+  display: block;
+  width: 100%;
+  min-height: 220px;
+  padding: 12px;
+  border: 1px solid #91a391;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--texto);
+  font-size: 18px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.importar-mensaje textarea::placeholder {
+  color: #657065;
+  opacity: 1;
+}
+
+.importar-mensaje textarea:focus {
+  outline: 3px solid var(--azul);
+  outline-offset: 1px;
+}
+
+#btn-importar {
+  width: 100%;
+  min-height: 58px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--verde);
+  border-radius: 8px;
+  background: var(--verde);
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1.3;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.importar-mensaje p {
+  margin: 12px 0 0;
+  color: #475747;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 /* BOTONES SUPERIORES */
@@ -62,16 +132,16 @@ input {
   color: var(--rojo);
 }
 
-.acciones button:active {
+button:active {
   filter: brightness(0.9);
 }
 
-.acciones button:focus-visible {
+button:focus-visible {
   outline: 3px solid var(--azul);
   outline-offset: 3px;
 }
 
-.acciones button:disabled {
+button:disabled {
   opacity: 0.6;
   cursor: wait;
 }
@@ -117,6 +187,81 @@ header p {
   color: #526052;
   font-size: 17px;
   line-height: 1.5;
+}
+
+/* COMPROBACIÓN DEL DESCARTE TOTAL */
+.comprobacion {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 2px solid #aebcae;
+  border-radius: 8px;
+  background: #f4f6f4;
+}
+
+.comprobacion h2 {
+  margin: 0 0 14px;
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.comprobacion-datos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.comprobacion-datos p {
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid #d1dad1;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.comprobacion-datos strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 23px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+#resultado-comprobacion {
+  margin: 16px 0 0;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.comprobacion[data-estado="correcto"] {
+  border-color: var(--verde);
+  background: #eaf5e8;
+}
+
+.comprobacion[data-estado="correcto"]
+#resultado-comprobacion {
+  color: #20502c;
+}
+
+.comprobacion[data-estado="error"] {
+  border-color: var(--rojo);
+  background: #fff0f0;
+}
+
+.comprobacion[data-estado="error"]
+#resultado-comprobacion,
+.comprobacion[data-estado="error"]
+#descarte-diferencia {
+  color: var(--rojo);
+}
+
+.comprobacion[data-estado="pendiente"]
+#resultado-comprobacion {
+  color: #526052;
 }
 
 /* EMPRESAS: UNA DEBAJO DE OTRA EN TELÉFONO */
@@ -180,7 +325,7 @@ td {
 }
 
 .fila-toneladas td {
-  background: var(--verde-claro);
+  background: #b5e3a0;
 }
 
 label {
@@ -189,7 +334,7 @@ label {
 }
 
 /* CAMPOS GRANDES */
-input {
+.empresa input {
   display: block;
   width: 100%;
   min-width: 0;
@@ -208,18 +353,19 @@ input {
   scroll-margin-top: 20px;
 }
 
-input:focus {
+.empresa input:focus {
   border-color: transparent;
   outline: 3px solid var(--azul);
   outline-offset: 1px;
 }
 
-input::selection {
+input::selection,
+textarea::selection {
   background: #c6e2ff;
   color: #102a43;
 }
 
-input[aria-invalid="true"] {
+.empresa input[aria-invalid="true"] {
   border-color: var(--rojo);
   background: #fff0f0;
 }
@@ -254,7 +400,7 @@ output,
   overflow-wrap: anywhere;
 }
 
-/* TOTALES GENERALES */
+/* RESUMEN GENERAL */
 .resumen {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -302,6 +448,7 @@ output,
   color: #475747;
   font-size: 17px;
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 #estado {
@@ -338,6 +485,10 @@ noscript {
     padding: 20px;
   }
 
+  .comprobacion-datos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .resumen {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -355,7 +506,7 @@ noscript {
     font-size: 17px;
   }
 
-  input {
+  .empresa input {
     font-size: 20px;
   }
 
@@ -374,8 +525,9 @@ noscript {
     padding: 8px;
   }
 
-  #reporte {
-    padding: 8px;
+  #reporte,
+  .importar-mensaje {
+    padding: 10px;
   }
 
   header h1 {
@@ -392,7 +544,7 @@ noscript {
     font-size: 16px;
   }
 
-  input {
+  .empresa input {
     padding: 10px 5px;
     font-size: 18px;
   }
@@ -400,9 +552,17 @@ noscript {
   .fila-total output {
     font-size: 20px;
   }
+
+  .comprobacion {
+    padding: 12px;
+  }
+
+  .comprobacion-datos strong {
+    font-size: 21px;
+  }
 }
 
-/* IMAGEN PNG: TRES CUADROS EN PARALELO */
+/* IMAGEN PNG */
 #reporte.modo-exportacion {
   width: 1180px;
   max-width: none;
@@ -416,6 +576,10 @@ noscript {
 .modo-exportacion .empresas {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
+}
+
+.modo-exportacion .comprobacion-datos {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .modo-exportacion .resumen {
@@ -445,7 +609,7 @@ noscript {
   font-size: 20px;
 }
 
-/* IMPRESIÓN DESDE EL NAVEGADOR */
+/* IMPRESIÓN */
 @page {
   size: A4 landscape;
   margin: 10mm;
@@ -470,6 +634,7 @@ noscript {
 
   header,
   .acciones,
+  .importar-mensaje,
   .ayuda,
   #estado,
   noscript {
@@ -484,7 +649,7 @@ noscript {
   }
 
   .titulo-reporte {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .titulo-reporte h2 {
@@ -492,6 +657,36 @@ noscript {
   }
 
   .titulo-reporte p {
+    font-size: 12px;
+  }
+
+  .comprobacion {
+    margin-bottom: 14px;
+    padding: 10px;
+    break-inside: avoid;
+  }
+
+  .comprobacion h2 {
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+
+  .comprobacion-datos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .comprobacion-datos p {
+    padding: 7px;
+    font-size: 11px;
+  }
+
+  .comprobacion-datos strong {
+    font-size: 16px;
+  }
+
+  #resultado-comprobacion {
+    margin-top: 8px;
     font-size: 12px;
   }
 
@@ -507,55 +702,55 @@ noscript {
   }
 
   .empresa h2 {
-    padding: 9px 7px;
+    padding: 8px 7px;
     font-size: 18px;
   }
 
   th,
   td {
-    padding: 6px;
-    font-size: 13px;
+    padding: 5px;
+    font-size: 12px;
   }
 
   .fila-empresa th,
   .fila-empresa td {
-    font-size: 16px;
+    font-size: 15px;
   }
 
-  input {
+  .empresa input {
     min-height: 0;
-    padding: 4px 0;
+    padding: 3px 0;
     border: 0;
     border-radius: 0;
     outline: 0;
     background: transparent;
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .fila-total th,
   .fila-total td {
-    padding: 10px 6px;
+    padding: 9px 5px;
   }
 
   .fila-total output {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .resumen {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px;
-    margin-top: 16px;
+    margin-top: 14px;
   }
 
   .resumen > div {
-    padding: 10px;
+    padding: 9px;
   }
 
   .resumen span {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .resumen strong {
-    font-size: 17px;
+    font-size: 16px;
   }
 }
