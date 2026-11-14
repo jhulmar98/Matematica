@@ -1,0 +1,561 @@
+/* BASE */
+:root {
+  --fondo: #f1f4f1;
+  --texto: #202820;
+  --borde: #c8d0c8;
+  --verde: #286440;
+  --verde-claro: #b5e3a0;
+  --amarillo: #ffff00;
+  --rojo: #bd2028;
+  --azul: #176bb0;
+
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 12px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.contenedor {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* BOTONES SUPERIORES */
+.acciones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.acciones button {
+  min-height: 58px;
+  padding: 12px 8px;
+  border: 1px solid var(--verde);
+  border-radius: 8px;
+  background: var(--verde);
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.3;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#btn-limpiar {
+  grid-column: 1 / -1;
+  border-color: var(--rojo);
+  background: #fff;
+  color: var(--rojo);
+}
+
+.acciones button:active {
+  filter: brightness(0.9);
+}
+
+.acciones button:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+}
+
+.acciones button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* ENCABEZADO */
+header {
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+header p {
+  margin: 0;
+  color: #526052;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* REPORTE */
+#reporte {
+  padding: 12px;
+  border: 1px solid #d1dad1;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.titulo-reporte {
+  margin-bottom: 20px;
+}
+
+.titulo-reporte h2 {
+  margin: 0 0 8px;
+  font-size: 23px;
+  line-height: 1.3;
+}
+
+.titulo-reporte p {
+  margin: 0;
+  color: #526052;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* EMPRESAS: UNA DEBAJO DE OTRA EN TELÉFONO */
+.empresas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+
+.empresa {
+  min-width: 0;
+  border: 1px solid var(--borde);
+  background: #fff;
+}
+
+.empresa h2 {
+  margin: 0;
+  padding: 14px 10px;
+  background: #edf3ed;
+  color: #244d31;
+  font-size: 24px;
+}
+
+/* TABLAS */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+th,
+td {
+  padding: 10px 8px;
+  border: 1px solid var(--borde);
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 1.4;
+  text-align: left;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+th {
+  width: 49%;
+}
+
+td {
+  width: 51%;
+}
+
+.fila-empresa th,
+.fila-empresa td {
+  background: var(--amarillo);
+  font-size: 21px;
+  font-weight: bold;
+}
+
+.fila-empresa td {
+  border: 2px solid #202820;
+  text-align: center;
+}
+
+.fila-toneladas td {
+  background: var(--verde-claro);
+}
+
+label {
+  display: block;
+  cursor: pointer;
+}
+
+/* CAMPOS GRANDES */
+input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 56px;
+  margin: 0;
+  padding: 10px 7px;
+  border: 1px solid #91a391;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--texto);
+  font-size: 21px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  text-align: left;
+  scroll-margin-top: 20px;
+}
+
+input:focus {
+  border-color: transparent;
+  outline: 3px solid var(--azul);
+  outline-offset: 1px;
+}
+
+input::selection {
+  background: #c6e2ff;
+  color: #102a43;
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--rojo);
+  background: #fff0f0;
+}
+
+/* ABONARON DE MÁS */
+.fila-excedente th,
+.fila-excedente td,
+.fila-excedente input {
+  color: var(--rojo);
+}
+
+/* TOTAL POR EMPRESA */
+.fila-total th,
+.fila-total td {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-top: 2px solid var(--verde);
+  background: #eaf4e9;
+  font-weight: bold;
+}
+
+.fila-total output {
+  display: block;
+  color: #204a2c;
+  font-size: 23px;
+  line-height: 1.3;
+}
+
+output,
+.valor-exportado {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* TOTALES GENERALES */
+.resumen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.resumen > div {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #cad8cc;
+  border-left: 5px solid var(--verde);
+  background: #f1f7f1;
+}
+
+.resumen span {
+  display: block;
+  margin-bottom: 8px;
+  color: #425542;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.resumen strong {
+  display: block;
+  font-size: 27px;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.resumen > div:nth-child(2) {
+  border-color: var(--verde);
+  background: #e3f0e1;
+}
+
+.resumen > div:nth-child(2) strong {
+  color: #204a2c;
+}
+
+/* AYUDA Y MENSAJES */
+.ayuda,
+#estado {
+  margin: 16px 0;
+  color: #475747;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+#estado {
+  min-height: 28px;
+  font-weight: bold;
+}
+
+noscript {
+  display: block;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--rojo);
+  background: #fff0f0;
+  color: var(--rojo);
+  font-size: 17px;
+}
+
+/* TABLETS */
+@media (min-width: 650px) {
+  body {
+    padding: 22px;
+  }
+
+  .acciones {
+    max-width: 780px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #btn-limpiar {
+    grid-column: auto;
+  }
+
+  #reporte {
+    padding: 20px;
+  }
+
+  .resumen {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* COMPUTADORAS */
+@media (min-width: 1150px) {
+  .empresas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  th,
+  td {
+    font-size: 17px;
+  }
+
+  input {
+    font-size: 20px;
+  }
+
+  .resumen {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .resumen strong {
+    font-size: 23px;
+  }
+}
+
+/* TELÉFONOS PEQUEÑOS */
+@media (max-width: 360px) {
+  body {
+    padding: 8px;
+  }
+
+  #reporte {
+    padding: 8px;
+  }
+
+  header h1 {
+    font-size: 25px;
+  }
+
+  .acciones button {
+    font-size: 16px;
+  }
+
+  th,
+  td {
+    padding: 8px 5px;
+    font-size: 16px;
+  }
+
+  input {
+    padding: 10px 5px;
+    font-size: 18px;
+  }
+
+  .fila-total output {
+    font-size: 20px;
+  }
+}
+
+/* IMAGEN PNG: TRES CUADROS EN PARALELO */
+#reporte.modo-exportacion {
+  width: 1180px;
+  max-width: none;
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+}
+
+.modo-exportacion .empresas {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.modo-exportacion .resumen {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.modo-exportacion th,
+.modo-exportacion td {
+  font-size: 17px;
+}
+
+.modo-exportacion .fila-total output {
+  font-size: 21px;
+}
+
+.modo-exportacion .resumen span {
+  font-size: 16px;
+}
+
+.modo-exportacion .resumen strong {
+  font-size: 22px;
+}
+
+.valor-exportado {
+  display: block;
+  padding: 10px 2px;
+  font-size: 20px;
+}
+
+/* IMPRESIÓN DESDE EL NAVEGADOR */
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #000;
+  }
+
+  .contenedor {
+    max-width: none;
+  }
+
+  header,
+  .acciones,
+  .ayuda,
+  #estado,
+  noscript {
+    display: none;
+  }
+
+  #reporte {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .titulo-reporte {
+    margin-bottom: 12px;
+  }
+
+  .titulo-reporte h2 {
+    font-size: 20px;
+  }
+
+  .titulo-reporte p {
+    font-size: 12px;
+  }
+
+  .empresas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .empresa,
+  .resumen > div {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .empresa h2 {
+    padding: 9px 7px;
+    font-size: 18px;
+  }
+
+  th,
+  td {
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  .fila-empresa th,
+  .fila-empresa td {
+    font-size: 16px;
+  }
+
+  input {
+    min-height: 0;
+    padding: 4px 0;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 14px;
+  }
+
+  .fila-total th,
+  .fila-total td {
+    padding: 10px 6px;
+  }
+
+  .fila-total output {
+    font-size: 15px;
+  }
+
+  .resumen {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .resumen > div {
+    padding: 10px;
+  }
+
+  .resumen span {
+    font-size: 12px;
+  }
+
+  .resumen strong {
+    font-size: 17px;
+  }
+}

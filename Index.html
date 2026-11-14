@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Control de descarte</title>
+
+  <link rel="stylesheet" href="./styles.css">
+
+  <!-- Exportar imagen PNG -->
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
+  ></script>
+
+  <!-- Exportar Excel con cuadros, colores y bordes -->
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"
+  ></script>
+
+  <!-- Cálculos y funcionamiento -->
+  <script defer src="./app.js"></script>
+</head>
+
+<body>
+  <main class="contenedor">
+
+    <nav class="acciones" aria-label="Acciones del reporte">
+      <button id="btn-png" type="button">
+        Guardar imagen
+      </button>
+
+      <button id="btn-excel" type="button">
+        Descargar Excel
+      </button>
+
+      <button id="btn-limpiar" type="button">
+        Limpiar datos
+      </button>
+    </nav>
+
+    <header>
+      <h1>Control de descarte</h1>
+      <p>Agrícola Los Médanos · Arándanos</p>
+    </header>
+
+    <section id="reporte" aria-label="Reporte de descarte">
+
+      <div class="titulo-reporte">
+        <h2>Agrícola Los Médanos</h2>
+        <p>Descarte de arándanos · Toneladas</p>
+      </div>
+
+      <div id="empresas" class="empresas">
+
+        <!-- LARAMA -->
+        <article class="empresa" data-empresa="larama">
+          <h2>LARAMA</h2>
+
+          <table aria-label="Datos de Larama">
+            <tbody>
+              <tr class="fila-empresa">
+                <th scope="row">EMPRESA</th>
+                <td>Larama</td>
+              </tr>
+
+              <tr>
+                <th scope="row">CLIENTE</th>
+                <td>Agrícola Los Médanos</td>
+              </tr>
+
+              <tr>
+                <th scope="row">DESCARTE</th>
+                <td>Arándanos</td>
+              </tr>
+
+              <tr class="fila-toneladas">
+                <th scope="row">
+                  <label for="larama-toneladas">TONELADAS</label>
+                </th>
+                <td>
+                  <input
+                    id="larama-toneladas"
+                    name="larama-toneladas"
+                    data-empresa="larama"
+                    data-campo="toneladas"
+                    data-decimales="3"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.000"
+                    aria-label="Toneladas de Larama"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row">
+                  <label for="larama-precio">PRECIO S/</label>
+                </th>
+                <td>
+                  <input
+                    id="larama-precio"
+                    name="larama-precio"
+                    data-empresa="larama"
+                    data-campo="precio"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="8.97"
+                    aria-label="Precio por tonelada de Larama, en soles"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row">
+                  <label for="larama-saldo">SALDO S/</label>
+                </th>
+                <td>
+                  <input
+                    id="larama-saldo"
+                    name="larama-saldo"
+                    data-empresa="larama"
+                    data-campo="saldo"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.00"
+                    aria-label="Saldo pendiente de Larama que se suma al total"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr class="fila-excedente">
+                <th scope="row">
+                  <label for="larama-excedente">
+                    ABONARON DE MÁS S/
+                  </label>
+                </th>
+                <td>
+                  <input
+                    id="larama-excedente"
+                    name="larama-excedente"
+                    data-empresa="larama"
+                    data-campo="excedente"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.00"
+                    aria-label="Dinero abonado de más de Larama que se descuenta"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr class="fila-total">
+                <th scope="row">TOTAL S/</th>
+                <td>
+                  <output
+                    id="larama-total"
+                    for="larama-toneladas larama-precio larama-saldo larama-excedente"
+                  >S/ 0.00</output>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+
+        <!-- AGA -->
+        <article class="empresa" data-empresa="aga">
+          <h2>AGA</h2>
+
+          <table aria-label="Datos de Aga">
+            <tbody>
+              <tr class="fila-empresa">
+                <th scope="row">EMPRESA</th>
+                <td>Aga</td>
+              </tr>
+
+              <tr>
+                <th scope="row">CLIENTE</th>
+                <td>Agrícola Los Médanos</td>
+              </tr>
+
+              <tr>
+                <th scope="row">DESCARTE</th>
+                <td>Arándanos</td>
+              </tr>
+
+              <tr class="fila-toneladas">
+                <th scope="row">
+                  <label for="aga-toneladas">TONELADAS</label>
+                </th>
+                <td>
+                  <input
+                    id="aga-toneladas"
+                    name="aga-toneladas"
+                    data-empresa="aga"
+                    data-campo="toneladas"
+                    data-decimales="3"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.000"
+                    aria-label="Toneladas de Aga"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row">
+                  <label for="aga-precio">PRECIO S/</label>
+                </th>
+                <td>
+                  <input
+                    id="aga-precio"
+                    name="aga-precio"
+                    data-empresa="aga"
+                    data-campo="precio"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="8.97"
+                    aria-label="Precio por tonelada de Aga, en soles"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row">
+                  <label for="aga-saldo">SALDO S/</label>
+                </th>
+                <td>
+                  <input
+                    id="aga-saldo"
+                    name="aga-saldo"
+                    data-empresa="aga"
+                    data-campo="saldo"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.00"
+                    aria-label="Saldo pendiente de Aga que se suma al total"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr class="fila-excedente">
+                <th scope="row">
+                  <label for="aga-excedente">
+                    ABONARON DE MÁS S/
+                  </label>
+                </th>
+                <td>
+                  <input
+                    id="aga-excedente"
+                    name="aga-excedente"
+                    data-empresa="aga"
+                    data-campo="excedente"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.00"
+                    aria-label="Dinero abonado de más de Aga que se descuenta"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr class="fila-total">
+                <th scope="row">TOTAL S/</th>
+                <td>
+                  <output
+                    id="aga-total"
+                    for="aga-toneladas aga-precio aga-saldo aga-excedente"
+                  >S/ 0.00</output>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+
+        <!-- ARENUVA -->
+        <article class="empresa" data-empresa="arenuva">
+          <h2>ARENUVA</h2>
+
+          <table aria-label="Datos de Arenuva">
+            <tbody>
+              <tr class="fila-empresa">
+                <th scope="row">EMPRESA</th>
+                <td>Arenuva</td>
+              </tr>
+
+              <tr>
+                <th scope="row">CLIENTE</th>
+                <td>Agrícola Los Médanos</td>
+              </tr>
+
+              <tr>
+                <th scope="row">DESCARTE</th>
+                <td>Arándanos</td>
+              </tr>
+
+              <tr class="fila-toneladas">
+                <th scope="row">
+                  <label for="arenuva-toneladas">TONELADAS</label>
+                </th>
+                <td>
+                  <input
+                    id="arenuva-toneladas"
+                    name="arenuva-toneladas"
+                    data-empresa="arenuva"
+                    data-campo="toneladas"
+                    data-decimales="3"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.000"
+                    aria-label="Toneladas de Arenuva"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row">
+                  <label for="arenuva-precio">PRECIO S/</label>
+                </th>
+                <td>
+                  <input
+                    id="arenuva-precio"
+                    name="arenuva-precio"
+                    data-empresa="arenuva"
+                    data-campo="precio"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="8.97"
+                    aria-label="Precio por tonelada de Arenuva, en soles"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row">
+                  <label for="arenuva-saldo">SALDO S/</label>
+                </th>
+                <td>
+                  <input
+                    id="arenuva-saldo"
+                    name="arenuva-saldo"
+                    data-empresa="arenuva"
+                    data-campo="saldo"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.00"
+                    aria-label="Saldo pendiente de Arenuva que se suma al total"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr class="fila-excedente">
+                <th scope="row">
+                  <label for="arenuva-excedente">
+                    ABONARON DE MÁS S/
+                  </label>
+                </th>
+                <td>
+                  <input
+                    id="arenuva-excedente"
+                    name="arenuva-excedente"
+                    data-empresa="arenuva"
+                    data-campo="excedente"
+                    data-decimales="2"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    spellcheck="false"
+                    value="0.00"
+                    aria-label="Dinero abonado de más de Arenuva que se descuenta"
+                    required
+                  >
+                </td>
+              </tr>
+
+              <tr class="fila-total">
+                <th scope="row">TOTAL S/</th>
+                <td>
+                  <output
+                    id="arenuva-total"
+                    for="arenuva-toneladas arenuva-precio arenuva-saldo arenuva-excedente"
+                  >S/ 0.00</output>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+
+      </div>
+
+      <!-- RESUMEN GENERAL -->
+      <section class="resumen" aria-label="Totales generales">
+        <div>
+          <span>Total toneladas</span>
+          <strong id="total-toneladas">0.000 t</strong>
+        </div>
+
+        <div>
+          <span>Total a pagar</span>
+          <strong id="total-general">S/ 0.00</strong>
+        </div>
+
+        <div>
+          <span>Saldos sumados</span>
+          <strong id="total-saldos">S/ 0.00</strong>
+        </div>
+
+        <div>
+          <span>Abonado de más descontado</span>
+          <strong id="total-excedentes">S/ 0.00</strong>
+        </div>
+      </section>
+
+    </section>
+
+    <p class="ayuda">
+      El saldo pendiente se suma al total.
+      Lo abonado de más se descuenta.
+    </p>
+
+    <p class="ayuda">
+      Usa coma para miles y punto para decimales:
+      <strong>1,137.35</strong>.
+    </p>
+
+    <p id="estado" role="status" aria-live="polite"></p>
+
+    <noscript>
+      Activa JavaScript para calcular y guardar los datos.
+    </noscript>
+
+  </main>
+</body>
+</html>
