@@ -8,13 +8,13 @@
 
   <link rel="stylesheet" href="./styles.css">
 
-  <!-- Exportación de imagen PNG -->
+  <!-- Crear imagen PNG -->
   <script
     defer
     src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
   ></script>
 
-  <!-- Exportación de Excel con formato -->
+  <!-- Crear Excel con formato -->
   <script
     defer
     src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"
@@ -31,20 +31,15 @@
       class="importar-mensaje"
       aria-labelledby="titulo-importar"
     >
-      <h2 id="titulo-importar">PEGAR MENSAJE</h2>
+      <h2 id="titulo-importar">Ingrese Datos</h2>
 
-      <label for="mensaje-stock">
       
-      </label>
 
       <textarea
         id="mensaje-stock"
         rows="10"
         spellcheck="false"
-        placeholder="Ingrese datos"
-
-
-        
+        placeholder="Pegue la informacion"
       ></textarea>
 
       <button id="btn-importar" type="button">
@@ -54,7 +49,7 @@
       
     </section>
 
-    <!-- ACCIONES -->
+    <!-- BOTONES -->
     <nav class="acciones" aria-label="Acciones del reporte">
       <button id="btn-png" type="button">
         Guardar imagen
@@ -74,7 +69,7 @@
       <p>Agrícola Los Médanos · Arándanos</p>
     </header>
 
-    <!-- REPORTE PARA EXPORTAR -->
+    <!-- REPORTE PARA IMAGEN Y EXCEL -->
     <section id="reporte" aria-label="Reporte de descarte">
 
       <div class="titulo-reporte">
@@ -82,7 +77,7 @@
         <p>Descarte de arándanos · Toneladas</p>
       </div>
 
-      <!-- COMPROBACIÓN DEL MENSAJE -->
+      <!-- COMPROBACIÓN -->
       <section
         id="comprobacion"
         class="comprobacion"
@@ -93,7 +88,7 @@
 
         <div class="comprobacion-datos">
           <p>
-            Descarte total del mensaje:
+            Total del mensaje:
             <strong id="descarte-total-mensaje">—</strong>
           </p>
 
@@ -144,7 +139,6 @@
                 <th scope="row">
                   <label for="larama-toneladas">TONELADAS</label>
                 </th>
-
                 <td>
                   <input
                     id="larama-toneladas"
@@ -167,7 +161,6 @@
                 <th scope="row">
                   <label for="larama-precio">PRECIO S/</label>
                 </th>
-
                 <td>
                   <input
                     id="larama-precio"
@@ -190,7 +183,6 @@
                 <th scope="row">
                   <label for="larama-saldo">SALDO S/</label>
                 </th>
-
                 <td>
                   <input
                     id="larama-saldo"
@@ -203,7 +195,7 @@
                     autocomplete="off"
                     spellcheck="false"
                     value="0.00"
-                    aria-label="Saldo pendiente de Larama que se suma al total"
+                    aria-label="Saldo de Larama que se suma al total"
                     required
                   >
                 </td>
@@ -215,7 +207,6 @@
                     ABONARON DE MÁS S/
                   </label>
                 </th>
-
                 <td>
                   <input
                     id="larama-excedente"
@@ -236,7 +227,6 @@
 
               <tr class="fila-total">
                 <th scope="row">TOTAL S/</th>
-
                 <td>
                   <output
                     id="larama-total"
@@ -273,7 +263,6 @@
                 <th scope="row">
                   <label for="aga-toneladas">TONELADAS</label>
                 </th>
-
                 <td>
                   <input
                     id="aga-toneladas"
@@ -296,7 +285,6 @@
                 <th scope="row">
                   <label for="aga-precio">PRECIO S/</label>
                 </th>
-
                 <td>
                   <input
                     id="aga-precio"
@@ -319,7 +307,6 @@
                 <th scope="row">
                   <label for="aga-saldo">SALDO S/</label>
                 </th>
-
                 <td>
                   <input
                     id="aga-saldo"
@@ -332,7 +319,7 @@
                     autocomplete="off"
                     spellcheck="false"
                     value="0.00"
-                    aria-label="Saldo pendiente de Aga que se suma al total"
+                    aria-label="Saldo de Aga que se suma al total"
                     required
                   >
                 </td>
@@ -344,7 +331,6 @@
                     ABONARON DE MÁS S/
                   </label>
                 </th>
-
                 <td>
                   <input
                     id="aga-excedente"
@@ -365,7 +351,6 @@
 
               <tr class="fila-total">
                 <th scope="row">TOTAL S/</th>
-
                 <td>
                   <output
                     id="aga-total"
@@ -402,7 +387,6 @@
                 <th scope="row">
                   <label for="arenuva-toneladas">TONELADAS</label>
                 </th>
-
                 <td>
                   <input
                     id="arenuva-toneladas"
@@ -425,7 +409,6 @@
                 <th scope="row">
                   <label for="arenuva-precio">PRECIO S/</label>
                 </th>
-
                 <td>
                   <input
                     id="arenuva-precio"
@@ -448,7 +431,6 @@
                 <th scope="row">
                   <label for="arenuva-saldo">SALDO S/</label>
                 </th>
-
                 <td>
                   <input
                     id="arenuva-saldo"
@@ -461,7 +443,7 @@
                     autocomplete="off"
                     spellcheck="false"
                     value="0.00"
-                    aria-label="Saldo pendiente de Arenuva que se suma al total"
+                    aria-label="Saldo de Arenuva que se suma al total"
                     required
                   >
                 </td>
@@ -473,7 +455,6 @@
                     ABONARON DE MÁS S/
                   </label>
                 </th>
-
                 <td>
                   <input
                     id="arenuva-excedente"
@@ -494,7 +475,6 @@
 
               <tr class="fila-total">
                 <th scope="row">TOTAL S/</th>
-
                 <td>
                   <output
                     id="arenuva-total"
@@ -508,7 +488,7 @@
 
       </div>
 
-      <!-- RESUMEN -->
+      <!-- SOLO DOS TOTALES EN EL RESUMEN -->
       <section class="resumen" aria-label="Totales generales">
         <div>
           <span>Total toneladas</span>
@@ -519,25 +499,19 @@
           <span>Total a pagar</span>
           <strong id="total-general">S/ 0.00</strong>
         </div>
-
-        <div>
-          <span>Saldos sumados</span>
-          <strong id="total-saldos">S/ 0.00</strong>
-        </div>
-
-        <div>
-          <span>Abonado de más descontado</span>
-          <strong id="total-excedentes">S/ 0.00</strong>
-        </div>
       </section>
 
     </section>
 
-    
+    <p class="ayuda">
+      El saldo se suma al importe.
+      Lo abonado de más se descuenta.
+    </p>
 
-    
-
-   
+    <p class="ayuda">
+      Usa coma para miles y punto para decimales:
+      <strong>1,137.35</strong>.
+    </p>
 
     <p id="estado" role="status" aria-live="polite"></p>
 
@@ -546,5 +520,52 @@
     </noscript>
 
   </main>
+
+  <!-- VENTANA PARA GUARDAR O COMPARTIR LA IMAGEN -->
+  <dialog
+    id="dialogo-imagen"
+    class="dialogo-imagen"
+    aria-labelledby="titulo-imagen"
+    aria-describedby="ayuda-imagen"
+  >
+    <h2 id="titulo-imagen">Guardar imagen</h2>
+
+    <p id="ayuda-imagen">
+      Pulsa “Guardar o compartir” para ver las opciones de tu teléfono.
+      Si aparece “Guardar imagen”, selecciónala para guardarla en Fotos.
+      También puedes mantener pulsada la imagen para ver las opciones disponibles.
+    </p>
+
+    <img
+      id="vista-previa-imagen"
+      alt="Vista previa del reporte de descarte"
+      hidden
+    >
+
+    <div class="acciones-imagen">
+      <button id="btn-compartir-imagen" type="button">
+        Guardar o compartir
+      </button>
+
+      <a
+        id="enlace-descargar-imagen"
+        download="Control-de-descarte.png"
+        hidden
+      >
+        Descargar imagen
+      </a>
+
+      <form method="dialog">
+        <button type="submit">Cerrar</button>
+      </form>
+    </div>
+
+    <p
+      id="estado-imagen"
+      role="status"
+      aria-live="polite"
+    ></p>
+  </dialog>
+
 </body>
 </html>
