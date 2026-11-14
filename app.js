@@ -18,11 +18,17 @@ const CAMPOS = [
 
 const $ = (id) => document.getElementById(id);
 
-/* Total original del mensaje, con tres decimales. */
 let totalMensaje = null;
+let archivoImagen = null;
+let urlImagen = null;
 
+/* MENSAJES */
 function mostrarEstado(texto) {
   $("estado").textContent = texto;
+}
+
+function mostrarEstadoImagen(texto) {
+  $("estado-imagen").textContent = texto;
 }
 
 /* NÚMEROS EXACTOS */
@@ -91,7 +97,7 @@ function sumar(datos, campo) {
   );
 }
 
-/* LEER LAS TABLAS */
+/* LEER Y CALCULAR */
 function leerDatos() {
   return EMPRESAS.map((empresa) => {
     const datos = { ...empresa };
@@ -120,10 +126,11 @@ function leerDatos() {
 
     if (!valido) return null;
 
-    // Toneladas × precio, redondeado a céntimos.
+    // Importe redondeado a céntimos por empresa.
     datos.importe =
       (datos.toneladas * datos.precio + 500n) / 1000n;
 
+    // Total = importe + saldo pendiente − abonado de más.
     datos.total =
       datos.importe + datos.saldo - datos.excedente;
 
@@ -131,7 +138,7 @@ function leerDatos() {
   });
 }
 
-/* COMPROBAR EL DESCARTE TOTAL */
+/* COMPROBAR DESCARTE TOTAL */
 function comprobarTotal() {
   let suma = 0n;
   let valido = true;
@@ -161,6 +168,7 @@ function comprobarTotal() {
   if (!valido) {
     panel.dataset.estado = "error";
     $("descarte-diferencia").textContent = "—";
+
     resultado.textContent =
       "Revisa las toneladas para comprobar el total.";
 
@@ -175,6 +183,7 @@ function comprobarTotal() {
   if (totalMensaje === null) {
     panel.dataset.estado = "pendiente";
     $("descarte-diferencia").textContent = "—";
+
     resultado.textContent =
       "Pega el mensaje y pulsa “Completar y comprobar”.";
 
@@ -191,26 +200,23 @@ function comprobarTotal() {
   $("descarte-diferencia").textContent =
     `${formatear(diferencia, 3)} t`;
 
-  if (diferencia === 0n) {
-    panel.dataset.estado = "correcto";
-    resultado.textContent =
-      "CORRECTO: la suma coincide con el descarte total.";
-  } else {
-    panel.dataset.estado = "error";
-    resultado.textContent =
-      "NO COINCIDE: revisa las cantidades. " +
-      "La diferencia es la suma de las empresas menos el total del mensaje.";
-  }
+  const coincide = diferencia === 0n;
+
+  panel.dataset.estado = coincide ? "correcto" : "error";
+
+  resultado.textContent = coincide
+    ? "CORRECTO: la suma coincide con el descarte total."
+    : "NO COINCIDE: revisa las cantidades. La diferencia es la suma de las empresas menos el total del mensaje.";
 
   return {
-    estado: diferencia === 0n ? "correcto" : "error",
+    estado: coincide ? "correcto" : "error",
     texto: resultado.textContent,
     suma,
     diferencia
   };
 }
 
-/* ACTUALIZAR RESULTADOS */
+/* MOSTRAR RESULTADOS */
 function actualizar(guardar = true) {
   const datos = leerDatos();
 
@@ -222,14 +228,8 @@ function actualizar(guardar = true) {
   const comprobacion = comprobarTotal();
 
   if (datos.some((empresa) => empresa === null)) {
-    [
-      "total-toneladas",
-      "total-general",
-      "total-saldos",
-      "total-excedentes"
-    ].forEach((id) => {
-      $(id).textContent = "—";
-    });
+    $("total-toneladas").textContent = "—";
+    $("total-general").textContent = "—";
 
     mostrarEstado(
       "Revisa los campos marcados. Los cambios incompletos no se guardan."
@@ -244,30 +244,24 @@ function actualizar(guardar = true) {
   $("total-general").textContent =
     dinero(sumar(datos, "total"));
 
-  $("total-saldos").textContent =
-    dinero(sumar(datos, "saldo"));
-
-  $("total-excedentes").textContent =
-    dinero(sumar(datos, "excedente"));
-
   if (guardar && guardarDatos()) {
-    let mensaje = "Datos guardados.";
+    let aviso = "Datos guardados.";
 
     if (comprobacion.estado === "error") {
-      mensaje += " Atención: el descarte total no coincide.";
+      aviso += " El descarte total no coincide.";
     }
 
     if (datos.some((empresa) => empresa.total < 0n)) {
-      mensaje += " Un total negativo indica saldo a favor.";
+      aviso += " Un total negativo indica saldo a favor.";
     }
 
-    mostrarEstado(mensaje);
+    mostrarEstado(aviso);
   }
 
   return datos;
 }
 
-/* PEGAR MENSAJE Y RECONOCER TOTALES */
+/* IMPORTAR MENSAJE */
 function importarMensaje() {
   const original = $("mensaje-stock").value.trim();
 
@@ -277,10 +271,6 @@ function importarMensaje() {
     return;
   }
 
-  /*
-   * Quitar formato habitual de WhatsApp.
-   * Las líneas de campo, packing y otros datos se ignoran.
-   */
   const texto = original
     .replace(/\r\n?/g, "\n")
     .replace(/\u00a0/g, " ")
@@ -302,7 +292,7 @@ function importarMensaje() {
       return convertir(coincidencia[1], 3);
     } catch {
       throw new Error(
-        `${nombre}: revisa el número. Usa coma para miles y punto para decimales, con hasta tres decimales.`
+        `${nombre}: revisa el número. Usa coma para miles, punto para decimales y hasta tres decimales.`
       );
     }
   }
@@ -316,7 +306,7 @@ function importarMensaje() {
 
     if (generales.length !== 1) {
       throw new Error(
-        "El mensaje debe incluir una sola línea DESCARTE TOTAL: con su cantidad."
+        "Incluye una sola línea DESCARTE TOTAL: con su cantidad."
       );
     }
 
@@ -354,10 +344,7 @@ function importarMensaje() {
 
       const bloque = texto.slice(inicio, fin);
 
-      /*
-       * Solo reconoce una línea que empiece con TOTAL:.
-       * No suma las líneas CAMPO, PACKING u otras.
-       */
+      // Ignora campo, packing y cualquier otra línea.
       const totales = [
         ...bloque.matchAll(
           /^[ \t]*TOTAL[ \t]*:[ \t]*([^\n]*)$/gim
@@ -366,7 +353,7 @@ function importarMensaje() {
 
       if (totales.length !== 1) {
         throw new Error(
-          `${empresa.nombre} debe tener una sola línea TOTAL: con su cantidad.`
+          `${empresa.nombre} debe tener una sola línea TOTAL:.`
         );
       }
 
@@ -388,10 +375,7 @@ function importarMensaje() {
       );
     }
 
-    /*
-     * Aplicar únicamente después de validar el mensaje completo.
-     * Precio, saldo y abonado de más no se reemplazan.
-     */
+    // Aplicar solo después de validar todo el mensaje.
     cantidades.forEach((cantidad, id) => {
       const entrada = $(`${id}-toneladas`);
 
@@ -402,7 +386,7 @@ function importarMensaje() {
 
     totalMensaje = esperado;
 
-    const datos = actualizar(true);
+    const datos = actualizar();
     const comprobacion = comprobarTotal();
 
     let aviso =
@@ -410,7 +394,7 @@ function importarMensaje() {
         ? "Totales completados. El descarte total coincide."
         : "Totales completados, pero el descarte total NO coincide. Revisa la diferencia.";
 
-    aviso += " Las cantidades se copiaron sin convertir unidades.";
+    aviso += " Se copiaron los números sin convertir unidades.";
 
     if (!datos) {
       aviso += " Corrige los otros campos para guardar.";
@@ -435,7 +419,7 @@ function guardarDatos() {
     });
   });
 
-  const guardado = {
+  const datos = {
     version: 2,
     valores,
     mensaje: $("mensaje-stock").value,
@@ -448,7 +432,7 @@ function guardarDatos() {
   try {
     localStorage.setItem(
       CLAVE_GUARDADO,
-      JSON.stringify(guardado)
+      JSON.stringify(datos)
     );
 
     return true;
@@ -468,9 +452,8 @@ function cargarDatos() {
     if (!texto) return "nuevo";
 
     const guardado = JSON.parse(texto);
-
-    // Compatible con el guardado de la versión anterior.
     const nuevoFormato = guardado.version === 2;
+
     const valores = nuevoFormato
       ? guardado.valores
       : guardado;
@@ -489,10 +472,7 @@ function cargarDatos() {
 
     let referencia = null;
 
-    if (
-      nuevoFormato &&
-      guardado.totalMensaje !== null
-    ) {
+    if (nuevoFormato && guardado.totalMensaje !== null) {
       referencia = convertir(
         guardado.totalMensaje,
         3
@@ -518,7 +498,7 @@ function cargarDatos() {
   }
 }
 
-/* SELECCIONAR EL VALOR AL TOCAR EL CAMPO */
+/* REEMPLAZAR VALOR AL TOCAR Y ESCRIBIR */
 function prepararEntrada(entrada) {
   let pendiente = null;
 
@@ -567,7 +547,7 @@ function prepararEntrada(entrada) {
         decimales
       );
     } catch {
-      // Conservar el texto para que pueda corregirse.
+      // Conservar el texto para corregirlo.
     }
 
     actualizar();
@@ -595,7 +575,9 @@ function limpiarDatos() {
   $("mensaje-stock").value = "";
   totalMensaje = null;
 
+  liberarImagen();
   actualizar();
+
   $("mensaje-stock").focus();
 }
 
@@ -616,7 +598,7 @@ function validarAccion() {
   return datos;
 }
 
-/* EXCEL PROFESIONAL */
+/* EXCEL CON TRES CUADROS Y SOLO DOS TOTALES GENERALES */
 async function exportarExcel() {
   const datos = validarAccion();
 
@@ -742,7 +724,9 @@ async function exportarExcel() {
         };
       }
 
-      if (opciones.borde) celda.border = borde;
+      if (opciones.borde) {
+        celda.border = borde;
+      }
     }
 
     function combinar(rango, valor, opciones = {}) {
@@ -818,10 +802,9 @@ async function exportarExcel() {
         [8, "DESCARTE", "Arándanos"],
         [9, "TONELADAS", numero(empresa.toneladas, 3)],
         [10, "PRECIO POR TONELADA", numero(empresa.precio, 2)],
-        [11, "IMPORTE", null],
-        [12, "SALDO A SUMAR", numero(empresa.saldo, 2)],
-        [13, "ABONARON DE MÁS", numero(empresa.excedente, 2)],
-        [14, "TOTAL A PAGAR", null]
+        [11, "SALDO A SUMAR", numero(empresa.saldo, 2)],
+        [12, "ABONARON DE MÁS", numero(empresa.excedente, 2)],
+        [13, "TOTAL A PAGAR", null]
       ];
 
       filas.forEach(([fila, titulo, contenido]) => {
@@ -857,7 +840,7 @@ async function exportarExcel() {
           };
         }
 
-        if (fila === 13) {
+        if (fila === 12) {
           [nombre, cantidad].forEach((celda) => {
             celda.font = {
               name: "Calibri",
@@ -867,7 +850,7 @@ async function exportarExcel() {
           });
         }
 
-        if (fila === 14) {
+        if (fila === 13) {
           [nombre, cantidad].forEach((celda) => {
             estilo(celda, {
               borde: true,
@@ -886,23 +869,19 @@ async function exportarExcel() {
         }
       });
 
-      hoja.getCell(`${valor}11`).value = {
-        formula: `ROUND(${valor}9*${valor}10,2)`,
-        result: numero(empresa.importe, 2)
-      };
-
-      hoja.getCell(`${valor}14`).value = {
-        formula: `ROUND(${valor}11+${valor}12-${valor}13,2)`,
+      hoja.getCell(`${valor}13`).value = {
+        formula:
+          `ROUND(ROUND(${valor}9*${valor}10,2)+${valor}11-${valor}12,2)`,
         result: numero(empresa.total, 2)
       };
     });
 
-    for (let fila = 6; fila <= 14; fila++) {
+    for (let fila = 6; fila <= 13; fila++) {
       hoja.getRow(fila).height =
         fila === 7 ? 44 : 34;
     }
 
-    combinar("A17:H17", "RESUMEN GENERAL", {
+    combinar("A16:H16", "RESUMEN GENERAL", {
       fondo: colores.verde,
       font: {
         size: 14,
@@ -911,13 +890,11 @@ async function exportarExcel() {
       }
     });
 
-    hoja.getRow(17).height = 30;
+    hoja.getRow(16).height = 30;
 
     const resumen = [
-      [18, "TOTAL TONELADAS", "toneladas", 9, 3],
-      [19, "SALDOS SUMADOS", "saldo", 12, 2],
-      [20, "ABONADO DE MÁS DESCONTADO", "excedente", 13, 2],
-      [21, "TOTAL GENERAL A PAGAR", "total", 14, 2]
+      [17, "TOTAL TONELADAS", "toneladas", 9, 3],
+      [18, "TOTAL GENERAL A PAGAR", "total", 13, 2]
     ];
 
     resumen.forEach(
@@ -931,8 +908,12 @@ async function exportarExcel() {
         const resultado = combinar(
           `F${fila}:H${fila}`,
           {
-            formula: `SUM(B${origen},E${origen},H${origen})`,
-            result: numero(sumar(datos, campo), decimales)
+            formula:
+              `SUM(B${origen},E${origen},H${origen})`,
+            result: numero(
+              sumar(datos, campo),
+              decimales
+            )
           },
           {
             fondo: colores.claro,
@@ -952,7 +933,7 @@ async function exportarExcel() {
     );
 
     combinar(
-      "A23:H23",
+      "A20:H20",
       "COMPROBACIÓN DEL DESCARTE TOTAL",
       {
         fondo: colores.verde,
@@ -963,16 +944,16 @@ async function exportarExcel() {
       }
     );
 
-    hoja.getRow(23).height = 28;
+    hoja.getRow(20).height = 28;
 
     combinar(
-      "A24:E24",
+      "A21:E21",
       "DESCARTE TOTAL DEL MENSAJE",
       { borde: true }
     );
 
     const referencia = combinar(
-      "F24:H24",
+      "F21:H21",
       totalMensaje === null
         ? "Sin referencia"
         : numero(totalMensaje, 3),
@@ -984,15 +965,20 @@ async function exportarExcel() {
 
     referencia.numFmt = '#,##0.000" t"';
 
-    combinar("A25:E25", "SUMA DE LAS EMPRESAS", {
-      borde: true
-    });
+    combinar(
+      "A22:E22",
+      "SUMA DE LAS EMPRESAS",
+      { borde: true }
+    );
 
     const sumaExcel = combinar(
-      "F25:H25",
+      "F22:H22",
       {
         formula: "SUM(B9,E9,H9)",
-        result: numero(sumar(datos, "toneladas"), 3)
+        result: numero(
+          sumar(datos, "toneladas"),
+          3
+        )
       },
       {
         borde: true,
@@ -1002,17 +988,20 @@ async function exportarExcel() {
 
     sumaExcel.numFmt = '#,##0.000" t"';
 
-    combinar("A26:E26", "DIFERENCIA", {
+    combinar("A23:E23", "DIFERENCIA", {
       borde: true
     });
 
     const diferenciaExcel = combinar(
-      "F26:H26",
+      "F23:H23",
       totalMensaje === null
         ? "—"
         : {
-            formula: "ROUND(F25-F24,3)",
-            result: numero(comprobacion.diferencia, 3)
+            formula: "ROUND(F22-F21,3)",
+            result: numero(
+              comprobacion.diferencia,
+              3
+            )
           },
       {
         borde: true,
@@ -1023,38 +1012,91 @@ async function exportarExcel() {
     diferenciaExcel.numFmt =
       '#,##0.000" t";[Red]-#,##0.000" t"';
 
-    combinar("A27:H27", comprobacion.texto, {
-      fondo:
-        comprobacion.estado === "correcto"
-          ? colores.claro
-          : comprobacion.estado === "error"
-            ? colores.error
-            : colores.gris,
-      font: { bold: true }
+    /*
+     * La comprobación también se recalcula
+     * si se editan las cantidades en Excel.
+     */
+    combinar(
+      "A24:H24",
+      totalMensaje === null
+        ? "Sin descarte total de referencia."
+        : {
+            formula:
+              'IF(ROUND(F22-F21,3)=0,"CORRECTO: el total coincide.","NO COINCIDE: revisa las cantidades.")',
+            result:
+              comprobacion.estado === "correcto"
+                ? "CORRECTO: el total coincide."
+                : "NO COINCIDE: revisa las cantidades."
+          },
+      {
+        fondo: colores.gris,
+        font: { bold: true }
+      }
+    );
+
+    hoja.addConditionalFormatting({
+      ref: "A24:H24",
+      rules: [
+        {
+          type: "expression",
+          formulae: [
+            "AND(ISNUMBER($F$21),ROUND($F$22-$F$21,3)=0)"
+          ],
+          style: {
+            fill: {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: colores.claro }
+            },
+            font: {
+              bold: true,
+              color: { argb: colores.verde }
+            }
+          }
+        },
+        {
+          type: "expression",
+          formulae: [
+            "AND(ISNUMBER($F$21),ROUND($F$22-$F$21,3)<>0)"
+          ],
+          style: {
+            fill: {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: colores.error }
+            },
+            font: {
+              bold: true,
+              color: { argb: colores.rojo }
+            }
+          }
+        }
+      ]
     });
 
-    for (let fila = 24; fila <= 26; fila++) {
+    for (let fila = 21; fila <= 23; fila++) {
       hoja.getRow(fila).height = 28;
     }
 
-    hoja.getRow(27).height = 36;
+    hoja.getRow(24).height = 36;
 
     combinar(
-      "A29:H29",
+      "A26:H26",
       "TOTAL = toneladas × precio + saldo pendiente − abonado de más.",
       { font: { size: 11 } }
     );
 
     combinar(
-      "A30:H30",
+      "A27:H27",
       "Cantidades copiadas sin convertir unidades. Un total negativo representa saldo a favor.",
       { font: { size: 10 } }
     );
 
-    hoja.getRow(29).height = 24;
-    hoja.getRow(30).height = 24;
+    hoja.getRow(26).height = 24;
+    hoja.getRow(27).height = 24;
 
-    hoja.pageSetup.printArea = "A1:H30";
+    hoja.pageSetup.printArea = "A1:H27";
+
     hoja.headerFooter.oddFooter =
       "&LControl de descarte&RPágina &P de &N";
 
@@ -1079,38 +1121,75 @@ async function exportarExcel() {
 
     mostrarEstado(
       comprobacion.estado === "error"
-        ? "Excel generado. Incluye la advertencia de que el total no coincide."
+        ? "Excel generado. El descarte total no coincide; la advertencia está incluida."
         : "Excel generado con cuadros y comprobación."
     );
-  } catch {
+  } catch (error) {
+    console.error("Error al exportar Excel:", error);
+
     mostrarEstado(
       "No se pudo generar el Excel. Intenta nuevamente."
     );
   } finally {
     if (url) {
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
     }
 
     boton.disabled = false;
   }
 }
 
-/* IMAGEN PNG */
+/* PREPARAR Y MOSTRAR IMAGEN */
+function liberarImagen() {
+  archivoImagen = null;
+
+  const vista = $("vista-previa-imagen");
+  const enlace = $("enlace-descargar-imagen");
+
+  vista.removeAttribute("src");
+  vista.hidden = true;
+
+  enlace.removeAttribute("href");
+  enlace.hidden = true;
+
+  if (urlImagen) {
+    URL.revokeObjectURL(urlImagen);
+    urlImagen = null;
+  }
+
+  $("btn-compartir-imagen").hidden = true;
+}
+
+function puedeCompartirImagen() {
+  try {
+    return Boolean(
+      archivoImagen &&
+      window.isSecureContext &&
+      navigator.share &&
+      navigator.canShare &&
+      navigator.canShare({
+        files: [archivoImagen]
+      })
+    );
+  } catch {
+    return false;
+  }
+}
+
 async function exportarPNG() {
   if (!validarAccion()) return;
 
   if (!window.html2canvas) {
     mostrarEstado(
-      "Conéctate a internet y recarga la página para guardar la imagen."
+      "Conéctate a internet y recarga la página para crear la imagen."
     );
     return;
   }
 
   const boton = $("btn-png");
   boton.disabled = true;
-  mostrarEstado("Preparando imagen…");
 
-  let url;
+  mostrarEstado("Preparando imagen…");
 
   try {
     if (document.fonts?.ready) {
@@ -1152,42 +1231,103 @@ async function exportarPNG() {
       }
     );
 
-    const archivo = await new Promise(
-      (resolve, reject) => {
-        canvas.toBlob((blob) => {
-          if (blob) {
-            resolve(blob);
-          } else {
-            reject(new Error("No se pudo crear la imagen"));
-          }
-        }, "image/png");
-      }
+    const blob = await new Promise((resolve, reject) => {
+      canvas.toBlob((resultado) => {
+        if (resultado) {
+          resolve(resultado);
+        } else {
+          reject(new Error("No se pudo crear la imagen"));
+        }
+      }, "image/png");
+    });
+
+    liberarImagen();
+
+    archivoImagen = new File(
+      [blob],
+      "Control-de-descarte.png",
+      { type: "image/png" }
     );
 
-    url = URL.createObjectURL(archivo);
+    urlImagen = URL.createObjectURL(archivoImagen);
 
-    const enlace = document.createElement("a");
-    enlace.href = url;
-    enlace.download = "Control-de-descarte.png";
+    const vista = $("vista-previa-imagen");
+    vista.src = urlImagen;
+    vista.hidden = false;
 
-    document.body.appendChild(enlace);
-    enlace.click();
-    enlace.remove();
+    const enlace = $("enlace-descargar-imagen");
+    enlace.href = urlImagen;
+    enlace.hidden = false;
 
-    mostrarEstado(
+    const compartirDisponible = puedeCompartirImagen();
+
+    $("btn-compartir-imagen").hidden =
+      !compartirDisponible;
+
+    $("ayuda-imagen").textContent =
+      compartirDisponible
+        ? "Pulsa “Guardar o compartir”. El teléfono mostrará las opciones disponibles. Si aparece “Guardar imagen”, selecciónala para guardarla en Fotos."
+        : "Puedes descargar la imagen o mantenerla pulsada para ver las opciones de guardado disponibles en tu teléfono.";
+
+    mostrarEstadoImagen(
       comprobarTotal().estado === "error"
-        ? "Imagen generada. El descarte total no coincide; revisa la advertencia."
-        : "Imagen PNG generada."
+        ? "Atención: el descarte total no coincide. La imagen incluye la advertencia."
+        : "Imagen lista."
     );
-  } catch {
+
+    $("dialogo-imagen").showModal();
+
     mostrarEstado(
-      "No se pudo generar la imagen. Intenta nuevamente."
+      "Imagen lista. Elige cómo guardarla en la ventana."
+    );
+  } catch (error) {
+    console.error("Error al crear imagen:", error);
+
+    mostrarEstado(
+      "No se pudo crear la imagen. Intenta nuevamente."
     );
   } finally {
-    if (url) {
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
-    }
+    boton.disabled = false;
+  }
+}
 
+/*
+ * Se ejecuta con un segundo toque del usuario.
+ * Así el teléfono puede abrir su menú nativo de compartir.
+ */
+async function compartirImagen() {
+  if (!archivoImagen) {
+    mostrarEstadoImagen(
+      "Primero genera la imagen nuevamente."
+    );
+    return;
+  }
+
+  if (!puedeCompartirImagen()) {
+    mostrarEstadoImagen(
+      "Este navegador no permite compartir archivos. Usa “Descargar imagen” o mantén pulsada la vista previa."
+    );
+    return;
+  }
+
+  const boton = $("btn-compartir-imagen");
+  boton.disabled = true;
+
+  try {
+    await navigator.share({
+      files: [archivoImagen]
+    });
+
+    mostrarEstadoImagen(
+      "Se completó la acción elegida en el teléfono."
+    );
+  } catch (error) {
+    mostrarEstadoImagen(
+      error.name === "AbortError"
+        ? "No se completó la acción. Puedes intentarlo otra vez."
+        : "No se pudo compartir. Usa “Descargar imagen” o mantén pulsada la vista previa."
+    );
+  } finally {
     boton.disabled = false;
   }
 }
@@ -1220,6 +1360,28 @@ function iniciar() {
   $("btn-limpiar").addEventListener(
     "click",
     limpiarDatos
+  );
+
+  $("btn-compartir-imagen").addEventListener(
+    "click",
+    compartirImagen
+  );
+
+  $("enlace-descargar-imagen").addEventListener(
+    "click",
+    () => {
+      mostrarEstadoImagen(
+        "Se solicitó la descarga. Revisa Descargas o Archivos; el navegador decide la ubicación."
+      );
+    }
+  );
+
+  $("dialogo-imagen").addEventListener(
+    "close",
+    () => {
+      // Conservar la imagen hasta crear otra o limpiar.
+      mostrarEstadoImagen("");
+    }
   );
 
   if (carga === "recuperado") {
