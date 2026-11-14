@@ -8,25 +8,61 @@
 
   <link rel="stylesheet" href="./styles.css">
 
-  <!-- Exportar imagen PNG -->
+  <!-- Exportación de imagen PNG -->
   <script
     defer
     src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
   ></script>
 
-  <!-- Exportar Excel con cuadros, colores y bordes -->
+  <!-- Exportación de Excel con formato -->
   <script
     defer
     src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"
   ></script>
 
-  <!-- Cálculos y funcionamiento -->
   <script defer src="./app.js"></script>
 </head>
 
 <body>
   <main class="contenedor">
 
+    <!-- PEGAR MENSAJE -->
+    <section
+      class="importar-mensaje"
+      aria-labelledby="titulo-importar"
+    >
+      <h2 id="titulo-importar">Pegar mensaje de stock</h2>
+
+      <label for="mensaje-stock">
+      
+      </label>
+
+      <textarea
+        id="mensaje-stock"
+        rows="10"
+        spellcheck="false"
+        placeholder="Ingrese datos"
+
+
+        
+      ></textarea>
+
+      <button id="btn-importar" type="button">
+        Completar y comprobar
+      </button>
+
+      <p>
+        Puede haber varias líneas de campo, packing u otros datos.
+        Se tomará únicamente el TOTAL de cada empresa.
+      </p>
+
+      <p>
+        Incluye DESCARTE TOTAL para comprobar que coincida
+        con la suma de las empresas.
+      </p>
+    </section>
+
+    <!-- ACCIONES -->
     <nav class="acciones" aria-label="Acciones del reporte">
       <button id="btn-png" type="button">
         Guardar imagen
@@ -46,12 +82,48 @@
       <p>Agrícola Los Médanos · Arándanos</p>
     </header>
 
+    <!-- REPORTE PARA EXPORTAR -->
     <section id="reporte" aria-label="Reporte de descarte">
 
       <div class="titulo-reporte">
         <h2>Agrícola Los Médanos</h2>
         <p>Descarte de arándanos · Toneladas</p>
       </div>
+
+      <!-- COMPROBACIÓN DEL MENSAJE -->
+      <section
+        id="comprobacion"
+        class="comprobacion"
+        data-estado="pendiente"
+        aria-labelledby="titulo-comprobacion"
+      >
+        <h2 id="titulo-comprobacion">Comprobación del total</h2>
+
+        <div class="comprobacion-datos">
+          <p>
+            Descarte total del mensaje:
+            <strong id="descarte-total-mensaje">—</strong>
+          </p>
+
+          <p>
+            Suma de las empresas:
+            <strong id="descarte-total-calculado">0.000 t</strong>
+          </p>
+
+          <p>
+            Diferencia:
+            <strong id="descarte-diferencia">—</strong>
+          </p>
+        </div>
+
+        <p
+          id="resultado-comprobacion"
+          role="status"
+          aria-live="polite"
+        >
+          Pega el mensaje y pulsa “Completar y comprobar”.
+        </p>
+      </section>
 
       <div id="empresas" class="empresas">
 
@@ -80,6 +152,7 @@
                 <th scope="row">
                   <label for="larama-toneladas">TONELADAS</label>
                 </th>
+
                 <td>
                   <input
                     id="larama-toneladas"
@@ -102,6 +175,7 @@
                 <th scope="row">
                   <label for="larama-precio">PRECIO S/</label>
                 </th>
+
                 <td>
                   <input
                     id="larama-precio"
@@ -124,6 +198,7 @@
                 <th scope="row">
                   <label for="larama-saldo">SALDO S/</label>
                 </th>
+
                 <td>
                   <input
                     id="larama-saldo"
@@ -148,6 +223,7 @@
                     ABONARON DE MÁS S/
                   </label>
                 </th>
+
                 <td>
                   <input
                     id="larama-excedente"
@@ -160,7 +236,7 @@
                     autocomplete="off"
                     spellcheck="false"
                     value="0.00"
-                    aria-label="Dinero abonado de más de Larama que se descuenta"
+                    aria-label="Abonado de más de Larama que se descuenta"
                     required
                   >
                 </td>
@@ -168,6 +244,7 @@
 
               <tr class="fila-total">
                 <th scope="row">TOTAL S/</th>
+
                 <td>
                   <output
                     id="larama-total"
@@ -204,6 +281,7 @@
                 <th scope="row">
                   <label for="aga-toneladas">TONELADAS</label>
                 </th>
+
                 <td>
                   <input
                     id="aga-toneladas"
@@ -226,6 +304,7 @@
                 <th scope="row">
                   <label for="aga-precio">PRECIO S/</label>
                 </th>
+
                 <td>
                   <input
                     id="aga-precio"
@@ -248,6 +327,7 @@
                 <th scope="row">
                   <label for="aga-saldo">SALDO S/</label>
                 </th>
+
                 <td>
                   <input
                     id="aga-saldo"
@@ -272,6 +352,7 @@
                     ABONARON DE MÁS S/
                   </label>
                 </th>
+
                 <td>
                   <input
                     id="aga-excedente"
@@ -284,7 +365,7 @@
                     autocomplete="off"
                     spellcheck="false"
                     value="0.00"
-                    aria-label="Dinero abonado de más de Aga que se descuenta"
+                    aria-label="Abonado de más de Aga que se descuenta"
                     required
                   >
                 </td>
@@ -292,6 +373,7 @@
 
               <tr class="fila-total">
                 <th scope="row">TOTAL S/</th>
+
                 <td>
                   <output
                     id="aga-total"
@@ -328,6 +410,7 @@
                 <th scope="row">
                   <label for="arenuva-toneladas">TONELADAS</label>
                 </th>
+
                 <td>
                   <input
                     id="arenuva-toneladas"
@@ -350,6 +433,7 @@
                 <th scope="row">
                   <label for="arenuva-precio">PRECIO S/</label>
                 </th>
+
                 <td>
                   <input
                     id="arenuva-precio"
@@ -372,6 +456,7 @@
                 <th scope="row">
                   <label for="arenuva-saldo">SALDO S/</label>
                 </th>
+
                 <td>
                   <input
                     id="arenuva-saldo"
@@ -396,6 +481,7 @@
                     ABONARON DE MÁS S/
                   </label>
                 </th>
+
                 <td>
                   <input
                     id="arenuva-excedente"
@@ -408,7 +494,7 @@
                     autocomplete="off"
                     spellcheck="false"
                     value="0.00"
-                    aria-label="Dinero abonado de más de Arenuva que se descuenta"
+                    aria-label="Abonado de más de Arenuva que se descuenta"
                     required
                   >
                 </td>
@@ -416,6 +502,7 @@
 
               <tr class="fila-total">
                 <th scope="row">TOTAL S/</th>
+
                 <td>
                   <output
                     id="arenuva-total"
@@ -429,7 +516,7 @@
 
       </div>
 
-      <!-- RESUMEN GENERAL -->
+      <!-- RESUMEN -->
       <section class="resumen" aria-label="Totales generales">
         <div>
           <span>Total toneladas</span>
@@ -455,13 +542,18 @@
     </section>
 
     <p class="ayuda">
-      El saldo pendiente se suma al total.
+      El saldo pendiente se suma.
       Lo abonado de más se descuenta.
     </p>
 
     <p class="ayuda">
       Usa coma para miles y punto para decimales:
       <strong>1,137.35</strong>.
+    </p>
+
+    <p class="ayuda">
+      Las cantidades del mensaje se copian sin convertir unidades.
+      Comprueba que correspondan a toneladas.
     </p>
 
     <p id="estado" role="status" aria-live="polite"></p>
